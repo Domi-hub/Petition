@@ -1,0 +1,21 @@
+<h3>No cash! Let's use creditcards in Germany</h3>
+<p>Sign this petition to prohibit using cash and enforce mobile and credit card payments</p>
+<img src="no_cash.png">
+
+{{#if error}}
+<div class="err">Ooops! Something went wrong</div>
+{{/if}}
+
+<form method="POST">
+    <div class="credentials">
+        <div class="name">
+            <input name="first" type="text" placeholder="first name">
+            <input name="last" type="text" placeholder="last name">
+        </div>
+    	<input type="hidden" name='sig'>
+    	<canvas id="signature" width="500" height="60"></canvas>
+    	<button>Submit</button>
+    </div>
+</form>
+
+<script src="client.js"></script>
