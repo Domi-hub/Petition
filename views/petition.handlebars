@@ -9,12 +9,12 @@
 <form method="POST">
     <div class="credentials">
         <div class="name">
-            <input name="first" type="text" placeholder="first name">
-            <input name="last" type="text" placeholder="last name">
+            <input name="first_name" type="text" placeholder="first name">
+            <input name="last_name" type="text" placeholder="last name">
         </div>
-    	<input type="hidden" name='sig'>
+    	<input id="data" name="signature" type="hidden">
     	<canvas id="signature" width="500" height="60"></canvas>
-    	<button>Submit</button>
+    	<button id="submit">Submit</button>
     </div>
 </form>
 
