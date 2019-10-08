@@ -1,6 +1,14 @@
-img {
+img,
+#logo {
     height: 60px;
     width: 60px;
+}
+
+img,
+#signature {
+    border: black solid 2px;
+    width: 500px;
+    height: 60px;
 }
 
 button {

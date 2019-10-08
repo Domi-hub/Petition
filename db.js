@@ -6,6 +6,7 @@ module.exports.addSigner = (firstName, lastName, signature) => {
         `
         INSERT INTO signatures (first_name, last_name, signature)
         VALUES($1, $2, $3)
+        RETURNING id;
         `,
         [firstName, lastName, signature]
     );
@@ -17,5 +18,16 @@ module.exports.getSigners = () => {
         SELECT first_name, last_name
         FROM signatures;
         `
+    );
+};
+
+module.exports.getSignature = id => {
+    return db.query(
+        `
+        SELECT signature
+        FROM signatures
+        WHERE id = $1;
+        `,
+        [id]
     );
 };
