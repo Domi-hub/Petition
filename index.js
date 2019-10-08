@@ -3,6 +3,7 @@ const app = express();
 const hb = require("express-handlebars");
 const db = require("./db");
 const cookieSession = require("cookie-session");
+const csurf = require("csurf");
 
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
@@ -22,9 +23,29 @@ app.use(
     })
 );
 
+app.use(csurf());
+
+app.use(function(req, res, next) {
+    res.set("x-frame-options", "DENY");
+    res.locals.csrfToken = req.csrfToken();
+    next();
+});
+
 app.get("/", (req, res) => {
     res.redirect("/petition");
 });
+
+app.get("/registration", (req, res) => {
+    res.render("register");
+});
+
+app.post("/registration", (req, res) => {});
+
+app.get("/login", (req, res) => {
+    res.render("login");
+});
+
+app.post("/login", (req, res) => {});
 
 app.get("/petition", (req, res) => {
     res.render("petition");

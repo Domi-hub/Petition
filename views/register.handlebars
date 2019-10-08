@@ -1,0 +1,18 @@
+<h3>Register to sign the petition</h3>
+
+{{#if error}}
+<div class="err">Ooops! Something went wrong</div>
+{{/if}}
+
+<form method="POST">
+    <div class="regInfo">
+    <input name="first_name" type="text" placeholder="First Name">
+    <input name="last_name" type="text" placeholder="Last Name">
+    <input name="email" type="text" placeholder="Email Address">
+    <input name="password" type="password" placeholder="Password">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <button id="signUp">SIGN UP</button>
+    </div>
+</form>
+
+<p>If you are already a member, please <a href="/login">log in.</a></p>

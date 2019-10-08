@@ -38,3 +38,11 @@ canvas {
     margin-top: 30px;
     cursor: crosshair;
 }
+
+.regInfo {
+    width: 200px;
+}
+
+input {
+    margin-top: 20px;
+}

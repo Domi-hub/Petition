@@ -1,0 +1,14 @@
+<h3>Please log in to sign</h3>
+
+{{#if error}}
+<div class="err">Ooops! Something went wrong</div>
+{{/if}}
+
+<form method="POST">
+    <div class="regInfo">
+    <input name="email" type="text" placeholder="Email Address">
+    <input name="email" type="password" placeholder="Password">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <button id="logIn">LOG IN</button>
+    </div>
+</form>
