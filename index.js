@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const hb = require("express-handlebars");
 const db = require("./db");
+const bcrypt = require("./bcrypt");
 const cookieSession = require("cookie-session");
 const csurf = require("csurf");
 
@@ -39,13 +40,55 @@ app.get("/registration", (req, res) => {
     res.render("register");
 });
 
-app.post("/registration", (req, res) => {});
+app.post("/registration", (req, res) => {
+    const firstName = req.body.first_name;
+    const lastName = req.body.last_name;
+    const email = req.body.email;
+    const password = req.body.password;
+
+    bcrypt.hash(password).then(hash => {
+        db.addUser(firstName, lastName, email, hash)
+            .then(() => {
+                res.redirect("/petition");
+            })
+            .catch(() => {
+                res.render("registration", { error: true });
+            });
+    });
+});
+
+app.get("/profile", (req, res) => {
+    res.render("profile");
+});
+
+app.post("/profile", (req, res) => {
+    res.redirect("/petition");
+});
 
 app.get("/login", (req, res) => {
     res.render("login");
 });
 
-app.post("/login", (req, res) => {});
+app.post("/login", (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    db.getPassword(email)
+        .then(result => {
+            return bcrypt
+                .compare(password, result.rows[0].password)
+                .then(isValid => {
+                    console.log(isValid);
+                    if (isValid == true) {
+                        res.redirect("/petition");
+                    }
+                });
+        })
+        .catch(error => {
+            console.log(error);
+            res.render("login", { error: true });
+        });
+});
 
 app.get("/petition", (req, res) => {
     res.render("petition");
@@ -55,8 +98,9 @@ app.post("/petition", (req, res) => {
     const firstName = req.body.first_name;
     const lastName = req.body.last_name;
     const signature = req.body.signature;
+    const userid = req.session.login;
 
-    db.addSigner(firstName, lastName, signature)
+    db.addSigner(firstName, lastName, signature, userid)
         .then(result => {
             req.session.signatureId = result.rows[0].id;
             console.log("session: ", req.session);
@@ -81,10 +125,10 @@ app.get("/thanks", (req, res) => {
 
 app.get("/signers", (req, res) => {
     db.getSigners()
-        .then(function(result) {
+        .then(result => {
             res.render("signers", { signers: result.rows });
         })
-        .catch(function(err) {
+        .catch(err => {
             console.log(err);
         });
 });
@@ -94,4 +138,8 @@ app.get("/logout", (req, res) => {
     res.redirect("/");
 });
 
-app.listen(8080, () => console.log("Petition server is running..."));
+app.listen(process.env.PORT || 8080, () =>
+    console.log("Petition server is running...")
+);
+
+//
