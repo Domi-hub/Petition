@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const hb = require("express-handlebars");
 const db = require("./db");
-const bcrypt = require("./bcrypt");
+const { hash, compare } = require("./bcrypt");
 const cookieSession = require("cookie-session");
 const csurf = require("csurf");
 
@@ -26,9 +26,34 @@ app.use(
 
 app.use(csurf());
 
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
     res.set("x-frame-options", "DENY");
     res.locals.csrfToken = req.csrfToken();
+
+    if (req.session.userId) {
+        if (["/login", "/registration"].includes(req.url)) {
+            res.redirect("petition");
+            return;
+        } else {
+            if (req.session.signatureId) {
+                if (["/petition"].includes(req.url)) {
+                    res.redirect("/thanks");
+                    return;
+                }
+            } else {
+                if (["/thanks", "/signers"].includes(req.url)) {
+                    res.redirect("/petition");
+                    return;
+                }
+            }
+        }
+    } else {
+        if (!["/login", "/registration", "/logout"].includes(req.url)) {
+            res.redirect("/registration");
+            return;
+        }
+    }
+
     next();
 });
 
@@ -41,18 +66,16 @@ app.get("/registration", (req, res) => {
 });
 
 app.post("/registration", (req, res) => {
-    const firstName = req.body.first_name;
-    const lastName = req.body.last_name;
-    const email = req.body.email;
-    const password = req.body.password;
+    const { firstName, lastName, email, password } = req.body;
 
-    bcrypt.hash(password).then(hash => {
+    hash(password).then(hash => {
         db.addUser(firstName, lastName, email, hash)
-            .then(() => {
+            .then(result => {
+                req.session.userId = result.rows[0].id;
                 res.redirect("/petition");
             })
             .catch(() => {
-                res.render("registration", { error: true });
+                res.render("register", { error: true });
             });
     });
 });
@@ -73,19 +96,20 @@ app.post("/login", (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    db.getPassword(email)
+    db.getUser(email)
         .then(result => {
-            return bcrypt
-                .compare(password, result.rows[0].password)
-                .then(isValid => {
-                    console.log(isValid);
-                    if (isValid == true) {
-                        res.redirect("/petition");
-                    }
-                });
+            const user = result.rows[0];
+            return compare(password, user.password).then(isValid => {
+                if (isValid) {
+                    req.session.userId = user.user_id;
+                    req.session.signatureId = user.signature_id;
+                    res.redirect("/petition");
+                } else {
+                    res.render("login", { error: true });
+                }
+            });
         })
-        .catch(error => {
-            console.log(error);
+        .catch(() => {
             res.render("login", { error: true });
         });
 });
@@ -95,15 +119,12 @@ app.get("/petition", (req, res) => {
 });
 
 app.post("/petition", (req, res) => {
-    const firstName = req.body.first_name;
-    const lastName = req.body.last_name;
+    const userId = req.session.userId;
     const signature = req.body.signature;
-    const userid = req.session.login;
 
-    db.addSigner(firstName, lastName, signature, userid)
+    db.addSigner(userId, signature)
         .then(result => {
             req.session.signatureId = result.rows[0].id;
-            console.log("session: ", req.session);
             res.redirect("/thanks");
         })
         .catch(err => {
@@ -135,11 +156,9 @@ app.get("/signers", (req, res) => {
 
 app.get("/logout", (req, res) => {
     req.session = null;
-    res.redirect("/");
+    res.redirect("/registration");
 });
 
 app.listen(process.env.PORT || 8080, () =>
     console.log("Petition server is running...")
 );
-
-//

@@ -4,23 +4,27 @@ const db = spicedPg(
         `postgres:postgres:postgres@localhost:5432/petition`
 );
 
-module.exports.addSigner = (firstName, lastName, signature, user_id) => {
+module.exports.addSigner = (userId, signature) => {
     return db.query(
         `
-        INSERT INTO signatures (first_name, last_name, signature, user_id)
-        VALUES($1, $2, $3, $4)
+        INSERT INTO signatures (user_id, signature)
+        VALUES($1, $2)
         RETURNING id;
         `,
-        [firstName, lastName, signature, user_id]
+        [userId, signature]
     );
 };
 
-module.exports.getSigners = () => {
+module.exports.getUser = email => {
     return db.query(
         `
-        SELECT first_name, last_name
-        FROM signatures;
-        `
+        SELECT users.id AS user_id, password, signatures.id AS signature_id
+        FROM users
+        LEFT JOIN signatures
+        ON users.id = signatures.user_id
+        WHERE email = $1;
+        `,
+        [email]
     );
 };
 
@@ -40,29 +44,19 @@ module.exports.addUser = (firstName, lastName, email, password) => {
         `
         INSERT INTO users (first_name, last_name, email, password)
         VALUES($1, $2, $3, $4)
+        RETURNING id;
         `,
         [firstName, lastName, email, password]
     );
 };
 
-module.exports.getPassword = email => {
+module.exports.getSigners = () => {
     return db.query(
         `
-        SELECT password
+        SELECT first_name, last_name
         FROM users
-        WHERE email = $1;
-        `,
-        [email]
-    );
-};
-
-module.exports.checkSignature = user_id => {
-    return db.query(
+        INNER JOIN signatures
+        ON users.id = signatures.user_id;
         `
-        SELECT signature
-        FROM signatures
-        WHERE user_id = $1;
-        `,
-        [user_id]
     );
 };
