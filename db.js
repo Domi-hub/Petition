@@ -79,7 +79,7 @@ module.exports.getSignersByCity = city => {
         `
         SELECT first_name, last_name, age, city, url
         FROM users
-        LEFT JOIN signatures
+        JOIN signatures
         ON users.id = signatures.user_id
         LEFT JOIN user_profiles
         ON users.id = user_profiles.user_id

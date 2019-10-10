@@ -1,5 +1,9 @@
 <h3>Tell us something about you</h3>
 
+{{#if error}}
+<div class="err">Ooops! Something went wrong</div>
+{{/if}}
+
 <form method="POST">
     <div class="additionalInfo">
     <input name="age" type="number" placeholder="Age">

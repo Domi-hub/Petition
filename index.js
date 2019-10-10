@@ -86,15 +86,25 @@ app.get("/profile", (req, res) => {
 
 app.post("/profile", (req, res) => {
     const { age, city, homepage } = req.body;
-    console.log(age, city, homepage);
-    let user_id = req.session.userId;
+    let userId = req.session.userId;
 
     if (age != "" || city != "" || homepage != "") {
-        db.addAdditionalInfo(age, city, homepage, user_id).then(id => {
-            console.log(id);
-            req.session.profileId = id.rows[0].id;
-            res.redirect("/");
-        });
+        if (
+            homepage != "" &&
+            !homepage.startsWith("http://") &&
+            !homepage.startsWith("https://")
+        ) {
+            res.render("profile", { error: true });
+        } else {
+            db.addAdditionalInfo(age, city, homepage, userId)
+                .then(id => {
+                    req.session.profileId = id.rows[0].id;
+                    res.redirect("/");
+                })
+                .catch(() => {
+                    res.render("profile", { error: true });
+                });
+        }
     } else {
         res.redirect("/");
     }
@@ -139,8 +149,7 @@ app.post("/petition", (req, res) => {
             req.session.signatureId = result.rows[0].id;
             res.redirect("/thanks");
         })
-        .catch(err => {
-            console.log(err);
+        .catch(() => {
             res.render("petition", { error: true });
         });
 });
@@ -168,9 +177,13 @@ app.get("/signers", (req, res) => {
 
 app.get("/signers/:city", (req, res) => {
     let city = req.params.city;
-    db.getSignersByCity(city).then(city => {
-        res.render("signers", { signers: city.rows });
-    });
+    db.getSignersByCity(city)
+        .then(city => {
+            res.render("signers", { signers: city.rows });
+        })
+        .catch(err => {
+            console.log(err);
+        });
 });
 
 app.get("/logout", (req, res) => {
