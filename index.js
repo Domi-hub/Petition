@@ -166,11 +166,12 @@ app.get("/signers", (req, res) => {
         });
 });
 
-// app.get("/signers/:city", (req, res) => {
-//     let city = req.params.city;
-//     console.log("params: ", req.params);
-//     // res.render("signers", { signers: result.rows });
-// });
+app.get("/signers/:city", (req, res) => {
+    let city = req.params.city;
+    db.getSignersByCity(city).then(city => {
+        res.render("signers", { signers: city.rows });
+    });
+});
 
 app.get("/logout", (req, res) => {
     req.session = null;
