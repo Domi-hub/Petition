@@ -53,10 +53,35 @@ module.exports.addUser = (firstName, lastName, email, password) => {
 module.exports.getSigners = () => {
     return db.query(
         `
-        SELECT first_name, last_name
+        SELECT first_name, last_name, age, city, url
         FROM users
-        INNER JOIN signatures
-        ON users.id = signatures.user_id;
+        LEFT JOIN signatures
+        ON users.id = signatures.user_id
+        LEFT JOIN user_profiles
+        ON users.id = user_profiles.user_id;
         `
     );
 };
+
+module.exports.addAdditionalInfo = (age, city, homepage, user_id) => {
+    return db.query(
+        `
+        INSERT INTO user_profiles (age, city, url, user_id)
+        VALUES ($1, $2, $3, $4)
+        RETURNING id
+        `,
+        [age || null, city, homepage, user_id]
+    );
+};
+
+// module.exports.getSignersByCity = city => {
+//     return db.query(
+//         `
+//         SELECT first_name, last_name
+//         FROM users
+//         INNER JOIN signatures ON users.id = signatures.user_id
+//         INNER JOIN user_profiles ON users.id = user_profiles.user_id
+//         `,
+//         [city]
+//     );
+// };

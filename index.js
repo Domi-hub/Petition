@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 
     if (req.session.userId) {
         if (["/login", "/registration"].includes(req.url)) {
-            res.redirect("petition");
+            res.redirect("/");
             return;
         } else {
             if (req.session.signatureId) {
@@ -42,7 +42,7 @@ app.use((req, res, next) => {
                 }
             } else {
                 if (["/thanks", "/signers"].includes(req.url)) {
-                    res.redirect("/petition");
+                    res.redirect("/");
                     return;
                 }
             }
@@ -72,7 +72,7 @@ app.post("/registration", (req, res) => {
         db.addUser(firstName, lastName, email, hash)
             .then(result => {
                 req.session.userId = result.rows[0].id;
-                res.redirect("/petition");
+                res.redirect("/profile");
             })
             .catch(() => {
                 res.render("register", { error: true });
@@ -85,7 +85,19 @@ app.get("/profile", (req, res) => {
 });
 
 app.post("/profile", (req, res) => {
-    res.redirect("/petition");
+    const { age, city, homepage } = req.body;
+    console.log(age, city, homepage);
+    let user_id = req.session.userId;
+
+    if (age != "" || city != "" || homepage != "") {
+        db.addAdditionalInfo(age, city, homepage, user_id).then(id => {
+            console.log(id);
+            req.session.profileId = id.rows[0].id;
+            res.redirect("/");
+        });
+    } else {
+        res.redirect("/");
+    }
 });
 
 app.get("/login", (req, res) => {
@@ -153,6 +165,12 @@ app.get("/signers", (req, res) => {
             console.log(err);
         });
 });
+
+// app.get("/signers/:city", (req, res) => {
+//     let city = req.params.city;
+//     console.log("params: ", req.params);
+//     // res.render("signers", { signers: result.rows });
+// });
 
 app.get("/logout", (req, res) => {
     req.session = null;

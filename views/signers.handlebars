@@ -2,6 +2,10 @@
 
 <ul>
 {{#signers}}
-    <li>{{first_name}} {{last_name}}</li>
+    {{#if url}}
+    <li><a href="{{url}}">{{first_name}} {{last_name}}</a> {{age}} <a href="/signers/{{city}}">{{city}}<a></li>
+    {{else}}
+        <li>{{first_name}} {{last_name}} {{age}} <a href="/signers/{{city}}">{{city}}<a></li>
+    {{/if}}
 {{/signers}}
 </ul>
