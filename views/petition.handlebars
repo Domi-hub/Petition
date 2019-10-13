@@ -1,18 +1,18 @@
-<h3>No cash! Let's use creditcards in Germany</h3>
-<p>Sign this petition to prohibit using cash and enforce mobile and credit card payments</p>
-<img id="logo" src="no_cash.png">
+<div id="sign">
+    <h2>Sign this petition to prohibit using cash and enforce mobile and credit card payments</h3>
 
-{{#if error}}
-<div class="err">Ooops! Something went wrong</div>
-{{/if}}
+    {{#if error}}
+    <div class="err">Ooops! Something went wrong</div>
+    {{/if}}
 
-<form method="POST">
-    <div class="credentials">
-    	<input id="data" name="signature" type="hidden">
-    	<canvas id="signature" width="500" height="60"></canvas>
-        <input type="hidden" name="_csrf" value="{{csrfToken}}">
-    	<button id="submit">Submit</button>
-    </div>
-</form>
+    <form method="POST">
+        <div class="credentials">
+        	<input id="data" name="signature" type="hidden">
+        	<canvas id="signature" width="800" height="250"></canvas>
+            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        	<button id="submit">Submit</button>
+        </div>
+    </form>
+</div>
 
 <script src="client.js"></script>

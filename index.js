@@ -81,7 +81,7 @@ app.post("/registration", (req, res) => {
 });
 
 app.get("/profile", (req, res) => {
-    res.render("profile");
+    res.render("profile", { userId: req.session.userId });
 });
 
 app.post("/profile", (req, res) => {
@@ -94,7 +94,7 @@ app.post("/profile", (req, res) => {
             !homepage.startsWith("http://") &&
             !homepage.startsWith("https://")
         ) {
-            res.render("profile", { error: true });
+            res.render("profile", { error: true, userId: userId });
         } else {
             db.upsertUserProfile(age, city, homepage, userId)
                 .then(id => {
@@ -102,7 +102,7 @@ app.post("/profile", (req, res) => {
                     res.redirect("/");
                 })
                 .catch(() => {
-                    res.render("profile", { error: true });
+                    res.render("profile", { error: true, userId: userId });
                 });
         }
     } else {
@@ -137,7 +137,7 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/petition", (req, res) => {
-    res.render("petition");
+    res.render("petition", { userId: req.session.userId });
 });
 
 app.post("/petition", (req, res) => {
@@ -150,16 +150,19 @@ app.post("/petition", (req, res) => {
             res.redirect("/thanks");
         })
         .catch(() => {
-            res.render("petition", { error: true });
+            res.render("petition", { error: true, userId: req.session.userId });
         });
 });
 
 app.get("/thanks", (req, res) => {
-    const id = req.session.signatureId;
+    const signatureId = req.session.signatureId;
 
-    db.getSignature(id)
+    db.getSignature(signatureId)
         .then(result => {
-            res.render("thanks", { signature: result.rows[0].signature });
+            res.render("thanks", {
+                signature: result.rows[0].signature,
+                userId: req.session.userId
+            });
         })
         .catch(err => {
             console.log(err);
@@ -169,7 +172,10 @@ app.get("/thanks", (req, res) => {
 app.get("/signers", (req, res) => {
     db.getSigners()
         .then(result => {
-            res.render("signers", { signers: result.rows });
+            res.render("signers", {
+                signers: result.rows,
+                userId: req.session.userId
+            });
         })
         .catch(err => {
             console.log(err);
@@ -181,7 +187,10 @@ app.get("/signers/:city", (req, res) => {
 
     db.getSignersByCity(city)
         .then(city => {
-            res.render("signers", { signers: city.rows });
+            res.render("signers", {
+                signers: city.rows,
+                userId: req.session.userId
+            });
         })
         .catch(err => {
             console.log(err);
@@ -193,7 +202,7 @@ app.get("/profile/edit", (req, res) => {
 
     db.getUserInfo(userId)
         .then(result => {
-            res.render("editprofile", { user: result.rows[0] });
+            res.render("editprofile", { user: result.rows[0], userId: userId });
         })
         .catch(err => {
             console.log(err);

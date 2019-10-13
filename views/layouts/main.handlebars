@@ -1,8 +1,17 @@
 <!DOCTYPE html>
 <title>{{title}}</title>
-<link rel="stylesheet" href="stylesheet.css">
+<link rel="stylesheet" href="/stylesheet.css">
+
+<header>
+    {{#if userId}}
+    <a href="/logout">
+        <button type="button" id="signOut">Sign out</button>
+    </a>
+    {{/if}}
+</header>
 
 {{{body}}}
+
 
 <footer>
     © 2019 Dominika Tazikova

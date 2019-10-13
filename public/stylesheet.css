@@ -1,19 +1,120 @@
-img,
-#logo {
-    height: 60px;
-    width: 60px;
+html {
+    background: url(credit.jpeg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
-img,
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+}
+
+header {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 30px;
+    padding-top: 10px;
+    background: white;
+}
+
+#registration {
+    width: 450px;
+    height: 600px;
+    background-color: white;
+    border-radius: 10px;
+    opacity: 0.8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.regInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+}
+
+#login {
+    width: 400px;
+    height: 300px;
+    background-color: white;
+    border-radius: 10px;
+    opacity: 0.9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 225px;
+}
+
+#profile {
+    width: 450px;
+    height: 500px;
+    background-color: white;
+    border-radius: 10px;
+    opacity: 0.8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 80px;
+}
+
+.additionalInfo {
+    width: 200px;
+}
+
+#sign {
+    width: 900px;
+    height: 400px;
+    background-color: white;
+    border-radius: 10px;
+    opacity: 0.8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 80px;
+}
+
+.credentials {
+    width: 800px;
+    height: 300px;
+}
+
+#submit {
+    margin-top: 30px;
+    margin-left: 400px;
+}
+
+#signOut {
+    font-size: 10px;
+    height: 30px;
+    width: 100px;
+    border-radius: 5px;
+    float: right;
+    background-color: black;
+    font-size: 13px;
+}
+
 #signature {
     border: black solid 2px;
-    width: 500px;
-    height: 60px;
 }
 
 button {
-    height: 35px;
-    width: 100px;
+    height: 40px;
+    width: 150px;
     border-radius: 30px;
     background-color: #205cc3;
     color: white;
@@ -22,27 +123,32 @@ button {
 }
 
 input {
-    border: 3px solid #205cc3;
+    border: 3px solid black;
     height: 25px;
     width: 200px;
-    font-size: 15px;
-}
-
-.credentials {
-    width: 600px;
-    height: 600px;
+    font-size: 16px;
+    border-radius: 1px;
+    font-family: sans-serif;
 }
 
 canvas {
-    border: black solid 2px;
+    border-color: white;
+    background-color: white;
+    opacity: 0.5;
     margin-top: 30px;
     cursor: crosshair;
 }
 
-.regInfo {
-    width: 200px;
-}
-
 input {
     margin-top: 20px;
+}
+
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: black;
+    color: white;
+    text-align: center;
 }
