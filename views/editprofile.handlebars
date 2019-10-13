@@ -1,0 +1,25 @@
+<h3>Edit your Profile</h3>
+
+<form method="POST">
+    <div class="UpdateInfo">
+    <input name="firstName" type="text" placeholder="First Name" value={{user.first_name}}>
+    <input name="lastName" type="text" placeholder="Last Name" value={{user.last_name}}>
+    <input name="email" type="text" placeholder="Email Address" value={{user.email}}>
+    <input name="password" type="password" placeholder="Password">
+    <input name="age" type="number" placeholder="Age" value={{user.age}}>
+    <input name="city" type="text" placeholder="City" value={{user.city}}>
+    <input name="homepage" type="url" placeholder="Homepage" value={{user.url}}>
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    <button>Update</button>
+    </div>
+</form>
+
+<form action="/signature/delete" method="POST">
+  <input type="hidden" name="_csrf" value="{{csrfToken}}">
+  <button>Delete Signature</button>
+</form>
+
+<form action="/profile/delete" method="POST">
+  <input type="hidden" name="_csrf" value="{{csrfToken}}">
+  <button>Delete Profile</button>
+</form>

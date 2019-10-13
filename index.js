@@ -86,7 +86,7 @@ app.get("/profile", (req, res) => {
 
 app.post("/profile", (req, res) => {
     const { age, city, homepage } = req.body;
-    let userId = req.session.userId;
+    const userId = req.session.userId;
 
     if (age != "" || city != "" || homepage != "") {
         if (
@@ -96,7 +96,7 @@ app.post("/profile", (req, res) => {
         ) {
             res.render("profile", { error: true });
         } else {
-            db.addAdditionalInfo(age, city, homepage, userId)
+            db.upsertUserProfile(age, city, homepage, userId)
                 .then(id => {
                     req.session.profileId = id.rows[0].id;
                     res.redirect("/");
@@ -156,6 +156,7 @@ app.post("/petition", (req, res) => {
 
 app.get("/thanks", (req, res) => {
     const id = req.session.signatureId;
+
     db.getSignature(id)
         .then(result => {
             res.render("thanks", { signature: result.rows[0].signature });
@@ -176,10 +177,79 @@ app.get("/signers", (req, res) => {
 });
 
 app.get("/signers/:city", (req, res) => {
-    let city = req.params.city;
+    const city = req.params.city;
+
     db.getSignersByCity(city)
         .then(city => {
             res.render("signers", { signers: city.rows });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+});
+
+app.get("/profile/edit", (req, res) => {
+    const userId = req.session.userId;
+
+    db.getUserInfo(userId)
+        .then(result => {
+            res.render("editprofile", { user: result.rows[0] });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+});
+
+app.post("/profile/edit", (req, res) => {
+    const userId = req.session.userId;
+    const {
+        firstName,
+        lastName,
+        email,
+        password,
+        age,
+        city,
+        homepage
+    } = req.body;
+
+    db.updateUser(firstName, lastName, email, userId)
+        .then(() => {
+            if (password) {
+                return hash(password).then(hash => {
+                    db.updateUserPassword(hash, userId);
+                });
+            }
+        })
+        .then(db.upsertUserProfile(age, city, homepage, userId))
+        .then(res.redirect("/"))
+        .catch(err => {
+            console.log(err);
+        });
+});
+
+app.post("/profile/delete", (req, res) => {
+    const signatureId = req.session.signatureId;
+    const userId = req.session.userId;
+
+    db.deleteSignature(signatureId)
+        .then(() => {
+            req.session.signatureId = null;
+        })
+        .then(db.deleteUserProfile(userId))
+        .then(db.deleteUser(userId))
+        .then(res.redirect("/logout"))
+        .catch(err => {
+            console.log(err);
+        });
+});
+
+app.post("/signature/delete", (req, res) => {
+    const signatureId = req.session.signatureId;
+
+    db.deleteSignature(signatureId)
+        .then(() => {
+            req.session.signatureId = null;
+            res.redirect("/");
         })
         .catch(err => {
             console.log(err);
