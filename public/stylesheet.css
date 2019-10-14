@@ -45,6 +45,10 @@ header {
     width: 200px;
 }
 
+#signUp {
+    margin-top: 10px;
+}
+
 #login {
     width: 400px;
     height: 300px;
@@ -56,6 +60,10 @@ header {
     justify-content: center;
     align-items: center;
     margin-top: 225px;
+}
+
+#logIn {
+    margin-top: 10px;
 }
 
 #profile {
@@ -98,14 +106,88 @@ header {
     margin-left: 400px;
 }
 
+#thankYou {
+    width: 900px;
+    height: 400px;
+    background-color: white;
+    border-radius: 10px;
+    opacity: 0.8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 80px;
+}
+
+#listOfSigners {
+    width: 300px;
+    height: 600px;
+    background-color: white;
+    border-radius: 10px;
+    opacity: 0.8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 80px;
+}
+
+#profileEdit {
+    width: 600px;
+    height: 600px;
+    background-color: white;
+    border-radius: 10px;
+    opacity: 0.8;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+    margin-top: 80px;
+}
+
+.updateInfo {
+    width: 300px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#update {
+    margin-top: 10px;
+}
+
+.deleteButton {
+    padding-top: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
 #signOut {
     font-size: 10px;
     height: 30px;
-    width: 100px;
+    width: 150px;
     border-radius: 5px;
     float: right;
     background-color: black;
     font-size: 13px;
+    margin-right: 10px;
+}
+
+#manageProfile {
+    font-size: 10px;
+    height: 30px;
+    width: 150px;
+    border-radius: 5px;
+    float: right;
+    border: black 2px solid;
+    background-color: white;
+    color: black;
+    font-size: 13px;
+    margin-right: 10px;
 }
 
 #signature {
